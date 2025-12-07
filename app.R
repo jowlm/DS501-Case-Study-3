@@ -6,22 +6,11 @@ library(shiny)
 library(ggplot2)
 library(dplyr)
 
-# 1. LOAD & CLEAN DATA
-# We wrap this in a tryCatch to handle cases where the file isn't found
-# If you don't have the file yet, it will use a dummy dataset so the app doesn't crash.
+# 1. LOAD DATA
 load_data <- function() {
-  if (file.exists("Electric_Vehicle_Population_Data.csv")) {
-    df <- read.csv("Electric_Vehicle_Population_Data.csv", stringsAsFactors = FALSE)
-    
-    # Cleaning: 
-    # 1. Select relevant numerical columns for clustering
-    # 2. Filter out rows with 0 MSRP (common in this specific dataset) or 0 Range
-    df_clean <- df %>%
-      select(Make, Model, Model.Year, Electric.Range, Base.MSRP) %>%
-      filter(Base.MSRP > 0, Base.MSRP < 400000, Electric.Range > 0) %>%
-      na.omit()
-    
-    return(df_clean)
+  # We now read the small, pre-cleaned file
+  if (file.exists("ev_data_small.csv")) {
+    return(read.csv("ev_data_small.csv", stringsAsFactors = FALSE))
   } else {
     return(NULL)
   }
@@ -191,7 +180,6 @@ server <- function(input, output) {
     
     ggplot(data_to_plot, aes_string(x = input$x_var, y = input$y_var, color = "cluster")) +
       geom_point(size = 3, alpha = 0.7) +
-      #stat_ellipse(type = "norm", linetype = 2, alpha = 0.5) + # Adds circle around clusters
       scale_color_brewer(palette = "Set1") +
       labs(title = paste("K-Means Clustering: K =", input$k_count),
            subtitle = "Grouping vehicles based on selected attributes",

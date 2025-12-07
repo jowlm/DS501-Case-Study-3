@@ -1,14 +1,14 @@
 # =======================================================
-# DS501 Case Study 3: EV Clustering App
+# DS501 Case Study 3
 # =======================================================
 
 library(shiny)
 library(ggplot2)
 library(dplyr)
 
-# 1. LOAD DATA
+
 load_data <- function() {
-  # We now read the small, pre-cleaned file
+  
   if (file.exists("ev_data_small.csv")) {
     return(read.csv("ev_data_small.csv", stringsAsFactors = FALSE))
   } else {
@@ -31,11 +31,11 @@ if (is.null(ev_data) || nrow(ev_data) < 10) {
 }
 
 # =======================================================
-# UI: The Visual Layout
+# UI
 # =======================================================
 ui <- fluidPage(
   
-  # CSS for a cleaner look
+  # CSS 
   tags$head(
     tags$style(HTML("
       .shiny-output-error { visibility: hidden; }
@@ -157,7 +157,7 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   # Reactive subset of data based on inputs
-  # We select only the two columns chosen by the user for the clustering
+
   cluster_data <- reactive({
     ev_data[, c(input$x_var, input$y_var)]
   })
@@ -204,3 +204,4 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
